@@ -11,6 +11,7 @@ import {
   ScanQrIcon,
   HistoryIcon,
 } from './icons';
+import { StatusBar } from './StatusBar';
 import { WalletPortfolio } from '../services/balanceService';
 
 interface DashboardProps {
@@ -26,7 +27,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
   onSelectToken,
   onSendClick,
 }) => {
-  // Format total balance USD matching image_0.png format "$40,85"
   const formattedTotal = portfolio
     ? `$${portfolio.totalUsd.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     : '$40,85';
@@ -39,22 +39,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
     ? `${portfolio.totalChange24hPercent.toFixed(2)}%`
     : '0.25%';
 
-  // Find token balances or fallback to screenshot data
   const tronToken = portfolio?.tokens.find((t) => t.symbol === 'TRX');
   const usdtToken = portfolio?.tokens.find((t) => t.symbol === 'USDT');
   const polToken = portfolio?.tokens.find((t) => t.symbol === 'POL');
 
   return (
     <div style={styles.container}>
-      {/* Status Bar Mock */}
-      <div style={styles.statusBar}>
-        <span style={styles.timeText}>14:41</span>
-        <div style={styles.statusIcons}>
-          <span style={{ fontSize: 10 }}>📶</span>
-          <span style={{ fontSize: 10 }}>📡</span>
-          <span style={styles.batteryPill}>13</span>
-        </div>
-      </div>
+      {/* Real-time System Status Bar */}
+      <StatusBar />
 
       {/* Top Header Bar */}
       <div style={styles.headerBar}>
@@ -222,29 +214,6 @@ const styles: Record<string, React.CSSProperties> = {
     paddingBottom: '90px',
     boxSizing: 'border-box',
     userSelect: 'none',
-  },
-  statusBar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '12px 20px 4px',
-    color: '#FFFFFF',
-  },
-  timeText: {
-    fontWeight: '600',
-    fontSize: '14px',
-  },
-  statusIcons: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  batteryPill: {
-    backgroundColor: '#3A3A3C',
-    borderRadius: '4px',
-    padding: '1px 5px',
-    fontSize: '10px',
-    fontWeight: 'bold',
   },
   headerBar: {
     display: 'flex',

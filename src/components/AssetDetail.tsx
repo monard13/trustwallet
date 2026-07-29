@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { USDTLogo, SendIcon, ReceiveIcon, SwapIcon } from './icons';
+import { StatusBar } from './StatusBar';
 import { TokenBalanceData } from '../services/balanceService';
 
 interface AssetDetailProps {
@@ -42,15 +43,8 @@ export const AssetDetail: React.FC<AssetDetailProps> = ({
 
   return (
     <div style={styles.container}>
-      {/* Status Bar */}
-      <div style={styles.statusBar}>
-        <span style={styles.timeText}>14:41</span>
-        <div style={styles.statusIcons}>
-          <span style={{ fontSize: 10 }}>📶</span>
-          <span style={{ fontSize: 10 }}>📡</span>
-          <span style={styles.batteryPill}>13</span>
-        </div>
-      </div>
+      {/* Real-time System Status Bar */}
+      <StatusBar />
 
       {/* Header */}
       <div style={styles.headerBar}>
@@ -243,28 +237,6 @@ const styles: Record<string, React.CSSProperties> = {
     boxSizing: 'border-box',
     position: 'relative',
     userSelect: 'none',
-  },
-  statusBar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '12px 20px 4px',
-  },
-  timeText: {
-    fontWeight: '600',
-    fontSize: '14px',
-  },
-  statusIcons: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  batteryPill: {
-    backgroundColor: '#3A3A3C',
-    borderRadius: '4px',
-    padding: '1px 5px',
-    fontSize: '10px',
-    fontWeight: 'bold',
   },
   headerBar: {
     display: 'flex',

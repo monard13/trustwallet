@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TronLogo, AddressBookIcon, ScanQrIcon } from './icons';
+import { StatusBar } from './StatusBar';
 
 interface SendUSDTProps {
   onBack: () => void;
@@ -30,15 +31,8 @@ export const SendUSDT: React.FC<SendUSDTProps> = ({ onBack }) => {
 
   return (
     <div style={styles.container}>
-      {/* Status Bar */}
-      <div style={styles.statusBar}>
-        <span style={styles.timeText}>14:42</span>
-        <div style={styles.statusIcons}>
-          <span style={{ fontSize: 10 }}>📶</span>
-          <span style={{ fontSize: 10 }}>📡</span>
-          <span style={styles.batteryPill}>13</span>
-        </div>
-      </div>
+      {/* Real-time System Status Bar */}
+      <StatusBar />
 
       {/* Header Bar */}
       <div style={styles.headerBar}>
@@ -189,28 +183,6 @@ const styles: Record<string, React.CSSProperties> = {
     boxSizing: 'border-box',
     userSelect: 'none',
   },
-  statusBar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '12px 20px 4px',
-  },
-  timeText: {
-    fontWeight: '600',
-    fontSize: '14px',
-  },
-  statusIcons: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  batteryPill: {
-    backgroundColor: '#3A3A3C',
-    borderRadius: '4px',
-    padding: '1px 5px',
-    fontSize: '10px',
-    fontWeight: 'bold',
-  },
   headerBar: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -339,7 +311,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: '500',
   },
   proximoBtn: {
-    backgroundColor: '#2E7D52', // Matching exact green tone of Send button in image_1
+    backgroundColor: '#2E7D52',
     color: '#FFFFFF',
     border: 'none',
     borderRadius: '26px',
