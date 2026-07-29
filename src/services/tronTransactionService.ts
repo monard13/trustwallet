@@ -21,11 +21,6 @@ export class TronTransactionService {
 
   /**
    * Sends TRC-20 USDT token transaction on Tron network.
-   * 1. Validates recipient address
-   * 2. Creates smart contract transfer transaction
-   * 3. Signs with private key
-   * 4. Broadcasts to Tron network
-   * 5. Handles energy/bandwidth errors gracefully
    */
   public static async sendUsdtTransaction(
     senderPrivateKey: string,
@@ -35,7 +30,6 @@ export class TronTransactionService {
     try {
       const cleanRecipient = recipientAddress.trim();
 
-      // 1. Validate Recipient Address
       if (!this.validateTronAddress(cleanRecipient)) {
         return {
           success: false,
@@ -50,7 +44,6 @@ export class TronTransactionService {
         };
       }
 
-      // Initialize TronWeb instance with full node
       const rawPrivateKey = senderPrivateKey.startsWith('0x')
         ? senderPrivateKey.slice(2)
         : senderPrivateKey;
@@ -60,25 +53,25 @@ export class TronTransactionService {
         privateKey: rawPrivateKey,
       });
 
-      // Amount in SUN units (USDT has 6 decimals: 1 USDT = 1,000,000 SUN)
       const amountSun = Math.floor(amountUsdt * 1000000);
 
-      // 2. Trigger smart contract transfer
       const parameter = [
         { type: 'address', value: cleanRecipient },
         { type: 'uint256', value: amountSun },
       ];
 
       const options = {
-        feeLimit: 100000000, // 100 TRX fee limit for TRC-20 execution
+        feeLimit: 100000000,
       };
+
+      const ownerHex = tronWeb.defaultAddress.hex ? String(tronWeb.defaultAddress.hex) : '';
 
       const transaction = await tronWeb.transactionBuilder.triggerSmartContract(
         TRON_USDT_CONTRACT,
         'transfer(address,uint256)',
         options,
         parameter,
-        tronWeb.defaultAddress.hex
+        ownerHex
       );
 
       if (!transaction.result || !transaction.result.result) {
@@ -88,13 +81,12 @@ export class TronTransactionService {
         };
       }
 
-      // 3. Sign transaction
       const signedTx = await tronWeb.trx.sign(transaction.transaction, rawPrivateKey);
-
-      // 4. Broadcast transaction
       const broadcast = await tronWeb.trx.sendRawTransaction(signedTx);
 
-      if (broadcast.result || broadcast.code === 'SUCCESS') {
+      const isSuccess = broadcast.result || (broadcast as any).code === 'SUCCESS';
+
+      if (isSuccess) {
         const txHash = broadcast.txid || transaction.transaction.txID;
         return {
           success: true,
@@ -105,29 +97,15 @@ export class TronTransactionService {
           ? Buffer.from(broadcast.message, 'hex').toString('utf8')
           : 'Error en la transmisión de la transacción.';
 
-        if (errorMsg.includes('BANDWITH') || errorMsg.includes('ENERGY')) {
-          return {
-            success: false,
-            error: 'Recursos insuficientes (Energía o Ancho de banda). Necesitas más TRX en tu balance.',
-          };
-        }
-
         return {
           success: false,
           error: `Error de red Tron: ${errorMsg}`,
         };
       }
     } catch (error: any) {
-      const msg = error?.message || 'Error inesperado al enviar la transacción.';
-      if (msg.includes('energy') || msg.includes('bandwidth')) {
-        return {
-          success: false,
-          error: 'Falta Energía o Ancho de banda en Tron. Por favor congela TRX o recarga tu saldo.',
-        };
-      }
       return {
         success: false,
-        error: msg,
+        error: error?.message || 'Error al enviar la transacción.',
       };
     }
   }
