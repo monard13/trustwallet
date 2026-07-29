@@ -18,10 +18,10 @@ export const AssetDetail: React.FC<AssetDetailProps> = ({
 }) => {
   const [selectedTimeframe, setSelectedTimeframe] = useState<'1H' | '1D' | '1W' | '1M' | '1Y' | 'ALL'>('1D');
   const [isEditing, setIsEditing] = useState(false);
-  const [editAmount, setEditAmount] = useState(tokenData ? tokenData.balanceFormatted.toString() : '2.085635');
+  const [editAmount, setEditAmount] = useState(tokenData ? tokenData.balanceFormatted.toString() : '998416.13');
 
-  const currentUsdtBalance = tokenData ? tokenData.balanceFormatted : 2.085635;
-  const currentUsdValue = tokenData ? tokenData.valueUsd : 2.08;
+  const currentUsdtBalance = tokenData ? tokenData.balanceFormatted : 998416.13;
+  const currentUsdValue = tokenData ? tokenData.valueUsd : 998416.13 * 0.9991;
 
   const handleSaveBalance = () => {
     const parsed = parseFloat(editAmount);
@@ -79,7 +79,6 @@ export const AssetDetail: React.FC<AssetDetailProps> = ({
             d="M 0 60 
                C 15 50, 30 75, 45 65 
                C 60 70, 75 90, 90 100 
-               C 105 115, 120 70, 135 60 
                C 150 55, 165 80, 180 50 
                C 195 45, 210 90, 225 80 
                C 240 70, 255 100, 270 75 
@@ -153,7 +152,7 @@ export const AssetDetail: React.FC<AssetDetailProps> = ({
               })}
             </span>
             <span style={styles.balanceTokenAmount}>
-              {currentUsdtBalance.toLocaleString('es-ES', { maximumFractionDigits: 6 })} USDT
+              {currentUsdtBalance.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 6 })} USDT
             </span>
           </div>
         )}

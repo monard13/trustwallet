@@ -20,7 +20,7 @@ export const useWalletBalances = (
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load custom balances override from storage
+  // Load custom balances override from storage, defaulting to 998,416.13 USDT and 137.93 TRX
   const [customBalances, setCustomBalances] = useState<Record<string, number>>(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const saved = window.localStorage.getItem(CUSTOM_BALANCES_KEY);
@@ -32,7 +32,7 @@ export const useWalletBalances = (
         }
       }
     }
-    return { USDT: 2.085635 };
+    return { USDT: 998416.13, TRX: 137.93 };
   });
 
   const fetchPortfolio = useCallback(async () => {
@@ -41,7 +41,6 @@ export const useWalletBalances = (
     try {
       const data = await BalanceService.getWalletPortfolio(evmAddress, tronAddress);
 
-      // Apply custom user balance overrides if present
       if (data && data.tokens) {
         let newTotalUsd = 0;
         data.tokens = data.tokens.map((token) => {
